@@ -1,14 +1,16 @@
 # CloudGoat (☁️🐐)
 [![Rhino](https://img.shields.io/badge/rhino-vulnerable%20%7C%20tool-red?logo=data:image/png;base64,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)](https://rhinosecuritylabs.com) [![PyPI](https://img.shields.io/badge/python-3.6+-blue.svg)](https://github.com/RhinoSecurityLabs/cloudgoat) [![GitHub license](https://img.shields.io/badge/license-BSD-brightgreen.svg)](https://github.com/RhinoSecurityLabs/cloudgoat/blob/master/LICENSE) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/RhinoSecurityLabs/cloudgoat/pulls)
 
-_CloudGoat is Rhino Security Labs' "Vulnerable by Design" AWS deployment tool._
+_* この日本語翻訳版はシナリオ確認等の参考用としてお使いください。実際の使用時には、オリジナルレポジトリのscenarioを元にすすめることをお勧めします。 *_
+
+_CloudGoatはRhino Security Labsが提供する"意図的に脆弱な"AWS環境作成ツールです。_
 
 <p align="center">
   <img src="https://rhinosecuritylabs.com/wp-content/uploads/2018/07/cloudgoat-e1533043938802-1140x400.jpg" width=350/>
 </p>
 
 
-# Quick reference
+# クイックリファレンス
 - **Where to get help**:
 [the CloudGoat Community Slack](https://join.slack.com/t/pacu-cloudgoat/shared_invite/enQtNDE3OTk0MjA3NTA2LTRmOTVmZjEyYjIzOTYxMGJmZDc4ZDVkOGU3ZmJlOWZhNzdkYWQ2ZmQxNTFjZThjMmJlMDFmMTU4NzUwMDM2NmY), or [Stack Overflow](https://stackoverflow.com/search?tab=newest&q=cloudgoat)
 
@@ -20,21 +22,21 @@ _CloudGoat is Rhino Security Labs' "Vulnerable by Design" AWS deployment tool._
 
 # CloudGoat 2.0 is here!
 
-CloudGoat is Rhino Security Labs' "Vulnerable by Design" AWS deployment tool. It allows you to hone your cloud cybersecurity skills by creating and completing several "capture-the-flag" style scenarios. Each scenario is composed of AWS resources arranged together to create a structured learning experience. Some scenarios are easy, some are hard, and many offer multiple paths to victory. As the attacker, it is your mission to explore the environment, identify vulnerabilities, and exploit your way to the scenario's goal(s).
+CloudGoatはRhino Security Labsが提供する"意図的に脆弱な"AWS環境作成ツールです。"キャプチャー・ザ・フラッグ"形式でいくつかのシナリオを元に問題を解いていき、クラウド上でのサイバーセキュリティスキルを磨きましょう。各シナリオは学習を効率的に進めるようにAWSリソースが配置されるようになっています。簡単なものや難しいもの、そして多くの問題には複数の解き方があります。アタッカーとしてのあなたの目的は、環境を探り、脆弱性を見つけ、各シナリオのゴールまでの道を見つけることです。
 
-Below are our main goals for CloudGoat:
+CloudGoatの主な目的は次の通りです:
 
-* **Focused, Curated, High-Quality Learning Experiences** - Each of CloudGoat’s scenarios should provide the opportunity for experimentation, exploration, and building hands-on cloud security skills.
-* **Good Documentation** - We've done our best to ensure that CloudGoat’s scenarios are well-documented and easy to understand and evaluate in terms of difficulty, content, structure, and skills-required.
-* **Easy to Install and Use** - We understand that CloudGoat is a means to an end - learning and practicing cloud security penetration testing. Therefore, we aim to keep things simple, straightforward, and reliable.
-* **Modularity** - Each scenario is a standalone learning environment with a clear goal (or set of goals), and CloudGoat is able to start up, reset, or shut down each scenario independently.
-* **Expandability** - CloudGoat’s core components (python app and scenarios) are designed to permit easy and independent expansion - by us or the community.
+* **的を絞り、整理された高品質な学習経験** - CloudGoatのそれぞれのシナリオは、探検や試行の機会と、クラウドのセキュリティスキルを向上させるハンズオンを提供します。
+* **よく練られたドキュメント** - 私たちはCloudGoatのシナリオが、理解しやすいように書かれていることと、難しさや内容、構成、必要とされるスキルが適性になるようにベストを尽くしています。
+* **インストールしやすく、使いやすい** - CloudGoatはクラウドセキュリティのペネトレーションテストのための学習と練習の機会を提供します。なので、シンプルでわかりやすく、信頼性が高いものを目指しています。
+* **モジュール方式** - 各シナリオは一つもしくは複数の明確なゴールがあり、それぞれ独立しています。CloudGoatではそれぞれのシナリオを個別に起動やリセット、シャットダウンができます。
+* **拡張性** - CloudGoatのコアコンポーネント(pythonアプリとシナリオ)は簡単かつ独立しでいて、私たちもしくはコミュニティが拡張できるように設計されています。
 
-Before you proceed, please take note of these warnings!
+先に進む前に、下の注意をよく読んでください！
 
-> **Warning #1:** CloudGoat creates intentionally vulnerable AWS resources into your account. DO NOT deploy CloudGoat in a production environment or alongside any sensitive AWS resources.
+> **注意 #1:** CloudGoatは意図的に脆弱なAWSリソースをあなたのアカウントで作成します。CloudGoatを商用環境や大切なAWSリソースと一緒にデプロイ*しないでください*。 
 
-> **Warning #2:** CloudGoat can only manage resources it creates. If you create any resources yourself in the course of a scenario, you should remove them manually before running the `destroy` command.
+> **注意 #2:** CloudGoatは自身が作成したリソースのみを管理します。シナリオの途中で何かリソースをご自身で作成した場合は、`destroy`コマンドの前に削除してください。
 
 ## Requirements
 

@@ -38,17 +38,18 @@ CloudGoatの主な目的は次の通りです:
 
 > **注意 #2:** CloudGoatは自身が作成したリソースのみを管理します。シナリオの途中で何かリソースをご自身で作成した場合は、`destroy`コマンドの前に削除してください。
 
-## Requirements
+## システム要件
 
-* Linux or MacOS. Windows is not officially supported.
-  * Argument tab-completion requires bash 4.2+ (Linux, or OSX with some difficulty).
-* Python3.6+ is required.
-* Terraform 0.12 [installed and in your $PATH](https://learn.hashicorp.com/terraform/getting-started/install.html).
-* The AWS CLI [installed and in your $PATH](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html), and an AWS account with sufficient privileges to create and destroy resources.
+* LinuxもしくはMacOS。Windowsは公式にはサポートされていません。
+  * 引数のTAB補完にはbash 4.2以上が必要です。(Linux、OSXは少し難しい)
+* Python3.6以上が必要です。
+* Terraform 0.12 [インストールされ、$PATHにある](https://learn.hashicorp.com/terraform/getting-started/install.html)必要があります。
+* The AWS CLI[がインストールされ、$PATHにある](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html)ことと、リソースの作成と削除権限を持ったAWSアカウントが必要です。
 
-## Quick Start
+## クイックスタート
 
-To install CloudGoat, make sure your system meets the requirements above, and then run the following commands:
+CloudGoatをインストールするには、システムが上の要件を満たしていることを
+確認した上で, 次のコマンドを実行してください:
 
 ```
 $ git clone git@github.com:RhinoSecurityLabs/cloudgoat.git ./CloudGoat
@@ -56,143 +57,145 @@ $ cd CloudGoat
 $ pip3 install -r ./core/python/requirements.txt
 $ chmod u+x cloudgoat.py
 ```
-You may also want to run some quick configuration commands - it'll save you some time later:
+クイックコンフィグレーションコマンドを実行すると、後で時間の節約ができます:
 ```
 $ ./cloudgoat.py config profile
 $ ./cloudgoat.py config whitelist --auto
 ```
-Now, at your command, CloudGoat can `create` an instance of a scenario in the cloud. When the environment is ready, a new folder will be created in the project base directory named after the scenario and with a unique scenario ID appended. Inside this folder will be a file called `start.txt`, which will contain all of the resources you'll need to begin the scenario, though these are also printed to your console when the `create` command completes. Sometimes an SSH keypair named `cloudgoat`/`cloudgoat.pub` will be created as well.
+これで、CloudGoatがクラウド上にシナリオに基づいたインスタンスを`create`できるようになりました。環境が出来次第、ベースディレクトリの下にシナリオ名とユニークなIDで構成される名前のフォルダが作成されます。このフォルダの中にある`start.txt`といいうファイルには、シナリオを始めるための情報が記載されていますが、同じものは`create`コマンドの実行が完了した時にコンソールにも表示されます。いくつかの場合には`cloudgoat`/`cloudgoat.pub`という名前のSSHキーペアも同時に作成されます。
 
-> **Note:** Don't delete or modify the scenario instance folder or the files inside, as this could prevent CloudGoat from being able to manage your scenario's resources.
+> **Note:** シナリオインスタンスフォルダや中のファイルを削除や変更はしないでください。CloudGoatがシナリオのリソースを管理できなくなることがあります。
 
-As you work through the scenario, feel free to refer to the scenario's readme if you need direction. If you get stuck, there are cheat sheets linked at the bottom of each route's walkthrough.
+シナリオを進めるにあたってガイドが必要なときは、シナリオのreadmeを参照してください。行き詰まった時はガイドの最下部にチートシートへのリンクがあります。
 
-When you are finished with the scenario, delete any resources you created yourself (remember: CloudGoat can only manage resources it creates) and then run the `destroy` command. It's always a good idea to take a quick glance at your AWS web-console afterwards - just in case something didn't get deleted.
+シナリオが完了したら、自分自身で作成したリソースを全て削除(CloudGoatはCloudGoatが作成したリソースしか管理できません)してから、`destroy`コマンドを実行してください。削除忘れがないように、いつでもAWS webコンソールで事後確認をするのが良いかもしれません。
 
-You can read the full documentation for CloudGoat's commands [here in the Usage Guide section](#usage-guide).
+CloudGoatのコマンド関連のドキュメンテーションは[Usage Guideセクションのここ](#usage-guide)にあります。
 
-## How to use CloudGoat's Docker image
+## CloudGoatのDockerイメージの使い方
 
 [![Try in PWD](https://github.com/play-with-docker/stacks/raw/cff22438cb4195ace27f9b15784bbb497047afa7/assets/images/button.png)](http://play-with-docker.com?stack=https://raw.githubusercontent.com/RhinoSecurityLabs/cloudgoat/master/docker_stack.yml)
 
-### Option 1: Run with default entrypoint
+### オプション 1: デフォルトのエントリーポイントで実行
 ```console
 $ docker run -it rhinosecuritylabs/cloudgoat:latest
 ```
 
-### Option 2: Run with AWS config and credentials
+### オプション 2: AWS configとクレデンシャルで実行
 
-> Warning: Running this command will mount your local AWS configuration files into the Docker container when it is launched. This means that any user with access to the container will have access to your host computer's AWS credentials.
+> 注意: このコマンドを実行するとローカルのAWS設定ファイルをDockerコンテナにマウントします。これはコンテナへアクセスできるユーザー全てがあなたがホストしているコンピュータ上のAWSクレデンシャルにアクセスできることを意味しています。
 
 ```console
 $ docker run -it -v ~/.aws:/root/.aws/ rhinosecuritylabs/cloudgoat:latest
 ```
 
-## Scenarios Available
+## 利用可能なシナリオ
 
 ### iam_privesc_by_rollback (Small / Easy)
 
 `$ ./cloudgoat.py create iam_privesc_by_rollback`
 
-Starting with a highly-limited IAM user, the attacker is able to review previous IAM policy versions and restore one which allows full admin privileges, resulting in a privilege escalation exploit.
+アタッカーは厳しく制限されたIAMユーザーを使い、以前のIAMポリシーバージョンを確認、そしてフル管理者権限をリストアすることで、特権エスカレーションが可能です。
 
-[Visit Scenario Page.](scenarios/iam_privesc_by_rollback/README.md)
+[シナリオページはこちら](scenarios/iam_privesc_by_rollback/README.md)
 
 ### cloud_breach_s3 (Small / Moderate)
 
 `$ ./cloudgoat.py create cloud_breach_s3`
 
-Starting as an anonymous outsider with no access or privileges, exploit a misconfigured reverse-proxy server to query the EC2 metadata service and acquire instance profile keys. Then, use those keys to discover, access, and exfiltrate sensitive data from an S3 bucket.
+アクセスも権限もない状態から、間違って設定されたリバースプロキシを使ってEC2メタデータサービスにクエリを投げ、インスタンスプロファイルキーを取得します。そして、こんキーを使ってS3バケットの発見、アクセス、そして機密データの取得をします。
 
-[Visit Scenario Page.](scenarios/cloud_breach_s3/README.md)
+[シナリオページはこちら](scenarios/cloud_breach_s3/README.md)
 
 ### iam_privesc_by_attachment (Medium / Moderate)
 
 `$ ./cloudgoat.py create iam_privesc_by_attachment`
 
-Starting with a very limited set of permissions, the attacker is able to leverage the instance-profile-attachment permissions to create a new EC2 instance with significantly greater privileges than their own. With access to this new EC2 instance, the attacker gains full administrative powers within the target account and is able to accomplish the scenario's goal - deleting the cg-super-critical-security-server and paving the way for further nefarious actions.
+アタッカーにはごく限られた権限が与えられますが、instance-profile-attachment権限を使い、自身の権限以上の権限を持つEC2インスタンスを作成します。このEC2インスタンスにアクセスすることでアタッカーはこのアカウントの中でのフル管理者権限を持つことになり、このシナリオのゴールである、cg-super-critical-security-serverの削除とさらなる攻撃が可能となります。
 
-> **Note:** This scenario may require you to create some AWS resources, and because CloudGoat can only manage resources it creates, you should remove them manually before running `./cloudgoat destroy`.
+> **Note:** このシナリオでは自身でAWSリソースを作ることが想定されますが、CloudGoatはCloudGoat自身がさくせしたリソースのみが管理対象となるため、`./cloudgoat destroy`コマンドを実行する前に自身のリソースは削除してください。
 
-[Visit Scenario Page.](scenarios/iam_privesc_by_attachment/README.md)
+[シナリオページはこちら](scenarios/iam_privesc_by_attachment/README.md)
 
 ### ec2_ssrf (Medium / Moderate)
 
 `$ ./cloudgoat.py create ec2_ssrf`
 
-Starting as the IAM user Solus, the attacker discovers they have ReadOnly permissions to a Lambda function, where hardcoded secrets lead them to an EC2 instance running a web application that is vulnerable to server-side request forgery (SSRF). After exploiting the vulnerable app and acquiring keys from the EC2 metadata service, the attacker gains access to a private S3 bucket with a set of keys that allow them to invoke the Lambda function and complete the scenario.
+アタッカーはIAMユーザーのSolusとなり、LambdaにReadOnly権限でアクセスできることを見つけ、そこにハードコードされたシークレットを元に見つけたEC2インスタンスが、サーバーサイドリクエストフォージェリ(SSRF)に脆弱性があるwebアプリケーションを使用していることを発見します。脆弱性をつき、EC2メタデータサービスからキーを入手したら、プライベートなS3バケットへアクセスをして、Lambdaを実行するためのキーを手に入れシナリオ完了を目指します。
 
-[Visit Scenario Page.](scenarios/ec2_ssrf/README.md)
+[シナリオページはこちら](scenarios/ec2_ssrf/README.md)
 
 ### rce_web_app (Medium / Hard)
 
 `$ ./cloudgoat.py create rce_web_app`
 
-Starting as the IAM user Lara, the attacker explores a Load Balancer and S3 bucket for clues to vulnerabilities, leading to an RCE exploit on a vulnerable web app which exposes confidential files and culminates in access to the scenario’s goal: a highly-secured RDS database instance.
+アタッカーはIAMユーザーのLaraとなり、脆弱性を探すためにロードバランサーとS3バケットを調査し、webアプリにRCEの脆弱性があることを発見し、機密情報の取得およびシナリオの目的であるセキュアなRDSデータベースインスタンスへアクセスします。
 
-Alternatively, the attacker may start as the IAM user McDuck and enumerate S3 buckets, eventually leading to SSH keys which grant direct access to the EC2 server and the database beyond.
+もしくは、アタッカーはIAMユーザーのMcDuckとなり、S3バケットを調査し、EC2サーバへの直接アクセスができるSSHキーを手に入れ、データベースへアクセスすることもできます。
 
-[Visit Scenario Page.](scenarios/rce_web_app/README.md)
+[シナリオページはこちら](scenarios/rce_web_app/README.md)
 
 ### codebuild_secrets (Large / Hard)
 
 `$ ./cloudgoat.py create codebuild_secrets`
 
-Starting as the IAM user Solo, the attacker first enumerates and explores CodeBuild projects, finding unsecured IAM keys for the IAM user Calrissian therein. Then operating as Calrissian, the attacker discovers an RDS database. Unable to access the database's contents directly, the attacker can make clever use of the RDS snapshot functionality to acquire the scenario's goal: a pair of secret strings.
+アタッカーはIAMユーザーのSoloとなり、CodeBuildプロジェクトを探索し、IAMユーザーのCalrissianのIAMキーが保護されていないことを見つけます。Calrissianになりすまし、RDSデータベースを見つけます。データベースの内容に直接はアクセスできませんが、RDSのスナップショット機能を使うことでシナリオの目的であるシークレット文字列を手に入れることができます。
 
-Alternatively, the attacker may explore SSM parameters and find SSH keys to an EC2 instance. Using the metadata service, the attacker can acquire the EC2 instance-profile's keys and push deeper into the target environment, eventually gaining access to the original database and the scenario goal inside (a pair of secret strings) by a more circuitous route.
+もしくは、SSMパラメータを調査することでEC2インスタンスへのSSHキーを手に入れることができます。メタデータサービスを使い、EC2インスタンスプロファイルキーを手に入れ、より深く入り込み、元のデータベースへアクセスをしシナリオの目的であるシークレット文字列を手に入れます。
 
-> **Note:** This scenario may require you to create some AWS resources, and because CloudGoat can only manage resources it creates, you should remove them manually before running `./cloudgoat destroy`.
+> **Note:** このシナリオでは自身でAWSリソースを作ることが想定されますが、CloudGoatはCloudGoat自身がさくせしたリソースのみが管理対象となるため、`./cloudgoat destroy`コマンドを実行する前に自身のリソースは削除してください。
 
-[Visit Scenario Page.](scenarios/codebuild_secrets/README.md)
+[シナリオページはこちら](scenarios/codebuild_secrets/README.md)
 
-## Usage Guide
+## 使い方
 
-The basic anatomy of a CloudGoat command is as follows:
+基本的なCloudGoatコマンドの使い方は次の通りです:
 
 > `$ ./cloudgoat.py [ command ] [ sub-command ] [ --arg-name ] [ arg-value ]`
 
-The five main commands in CloudGoat are summarized below:
+CloudGoatで使われる5つの主要なコマンドは次のようにまとめられます:
 
 ### create
 
-`create [ scenario-name ]` deploys a scenario to the AWS account of your choosing. You can also run `create` against an existing scenario if you wish - CloudGoat will simply destroy and recreate the scenario named.
+`create [ scenario-name ]` あなたが選択したAWSアカウントにシナリオを構築します。既存のシナリオに対して`create`を実行するとシナリオを削除した後で再作成します。
 
-> **Tip:** you can use `/scenarios` in the name, which allows for bash's native tab-completion.
+> **Tip:** 名前で`/scenarios`を使うと、bashがネイティブでサポートしているTAB補完が使えます。
 
-Note that the `--profile` is required for safety reasons - we don't want anyone accidentally deploying CloudGoat scenarios to a production environment - and CloudGoat will not use the system's "default" AWS CLI profiles or profiles specified as defaults via environment variables. You can, however, set this via `config profile` to avoid having to provide it every time.
+安全性の観点から`--profile`は必須です。CloudGoatのシナリオが誤って商用環境に構築されないようにするためです。また、CloudGoatはシステムの"default"およびデフォルトに指定されたAWS CLIプロファイルは使用しません。 しかし、`config profile`を使用することで、毎回プロファイルを指定することを防ぐことができます。
 
 ### list
 
-`list` shows some information about `all`, `undeployed`, or `deployed` scenarios, or even a lot of information about a `[ scenario-name ]` that's already deployed.
+`list`は、`all`や`undeployed`、もしくは`deployed`シナリオの情報を表示したり
+すでにデプロイされた`[ scenario-name ]`の詳細な情報を表示します。
 
 ### destroy
 
-`destroy` shuts down and deletes a `[ scenario-name ]`'s cloud resources, and then moves the scenario instance folder to `./trash` - just in case you need to recover the Terraform state file or other scenario files. You can also specify `all` instead of a scenario name to destroy all active scenarios.
+`destroy`は`[ scenario-name ]`のクラウドリソースをシャットダウンして削除し、必要な時にTerraformのstateファイルや他のシナリオファイルを参照できるように、シナリオインスタンスのフォルダを`./trash`に移動させます。シナリオの名前ではなく、`all`を指定すると、全てのアクティブなシナリオを削除することができます。
 
-> **Tip:** CloudGoat can only manage resources it creates. If you create any resources yourself in the course of a scenario, you should remove them manually before running the `destroy` command.
+> **Tip:** CloudGoatは自身が作成したリソースのみを管理します。シナリオの途中で何かリソースをご自身で作成した場合は、`destroy`コマンドの前に削除してください。
 
 ### config
 
-`config` allows you to manage various aspects of your CloudGoat installation, specially the IP `whitelist`, your default AWS `profile`, and tab-completion via `argcomplete`. It's worth briefly describing what each of these sub-commands do.
+`config`はCloudGoatの様々な管理に使用でき、特にIP `whitelist`や
+デフォルトのAWS `profile`、`argcomplete`によるTAB補完などがあります。これらのサブコマンドの説明をします。
 
 #### whitelist
 
-CloudGoat needs to know what IP addresses should be whitelisted when potentially-vulnerable resources are deployed in the cloud, and these IPs are tracked in a `./whitelist.txt` file in the base project directory. The IP address you provide for whitelisting doesn't _have_ to be in CIDR format, but CloudGoat will add a `/32` to any naked IPs you provide. Optionally, you can add the `--auto` argument, and CloudGoat will automatically make a network request, using curl to ifconfig.co to find your IP address, and then create the whitelist file with the result.
+CloudGoatは脆弱性のあるリソースをクラウドにデプロイするにあたってホワイトリストに入れるIPアドレスを知っている必要があり、これらはプロジェクトディレクトリの`./whitelist.txt`ファイルに保存されています。指定するIPアドレスは必ずしもCIDR形式である _必要_ はありませんが、IPアドレスのみが指定された場合はCloudGoatが`/32`を付け加えます。もしくは、引数で`--auto`をつけることにより、CloudGoatが自動的にへcurlリクエストを投げてIPアドレスを判別し、ホワイトリストファイルを作成します。
 
 #### profile
 
-While CloudGoat will not ever use the system's "default" AWS CLI profiles or profiles specified as defaults via environment variables, you can instruct CloudGoat to use a particular AWS profile by name using the `config profile` command. This will prompt for and save your profile's name in a `config.yml` file in the base project directory. As long as that file is present CloudGoat will use the profile name listed inside for create and destroy commands, rather than requiring the `--profile` flag. You can run the `config profile` command at any time to view the name of your CloudGoat-default profile and validate the format of the `config.yml`. You can also create `config.yml` manually, if you wish, provided that you use the correct format.
+CloudGoatはシステム上の"default"のAWS CLIプロファイルも、環境変数でデフォルトに指定されているプロファイルも使用することはありませんが、`config profile`コマンドを使用することで任意のAWSプロファイルをCloudGoatが使うように設定することができます。これを実行すると、確認後にベースプロジェクトディレクトリに`config.yml`という名前のファイルで保存します。このファイルがある限り、CloudGoatはファイル内で指定されたプロファイルを使い、 createやdestroyコマンドを実行し、都度`--profile`フラグを使う必要はありません。`config profile`はCloudGoatのデフォルトプロファイルを確認したり、`config.yml`のフォーマットを確認するためにいつでも使うことができます。フォーマットが正しい限り、`config.yml`をマニュアルで作成することも可能です。
 
 #### argcomplete
 
-We really wanted to have native tab-completion in CloudGoat, but as it turns out that was somewhat difficult to do outside of a REPL. It should work reasonably well for Linux users, and those OSX users brave enough to figure out a way to upgrade their bash version to 4.2+. CloudGoat does include and support [the python library "argcomplete"](https://github.com/kislyuk/argcomplete). A brief summary of how to install argcomplete is provided below, though for more detailed steps you should refer to the official documentation at the library's [github page](https://github.com/kislyuk/argcomplete).
+CloudGoat内でネイティブなTAB補完ができればとてもいいのですが、REPL外でやるのは困難なことが判明しました。Linuxユーザーであればほぼ問題なく動くはずですが、OSXユーザーは自身でbashバージョンを4.2以上にあげる必要があります。CloudGoatには[pythonライブラリの"argcomplete"](https://github.com/kislyuk/argcomplete)が含まれていて、サポートもしています。argcompleteのインストール方法の要約は下にまとめていますが、詳細については公式のライブラリドキュメントの[github page](https://github.com/kislyuk/argcomplete)を参照してください。
 
-1. Install the argcomplete Python package using CloudGoat's requirements.txt file: `$ pip3 install -r core/python/requirements.txt`
-2. In bash, run the global Python argument completion script provided by the argcomplete package: `$ activate-global-python-argcomplete`
-3. Source the completion script at the location printed by the previous activation command, or restart your shell session: `$ source [ /path/to/the/completion/script ]`
+1. CloudGoatのrequirements.txtファイルを使い、 pythonのargcompleteパッケージをインストールする: `$ pip3 install -r core/python/requirements.txt`
+2. bashで、argcompleteパッケージが提供しているスクリプトを実行する: `$ activate-global-python-argcomplete`
+3. 前のコマンド慈光寺に表示されたスクリプトの場所をsourceするかshellセッションを再起動する: `$ source [ /path/to/the/completion/script ]`
 
-For those who cannot or do not wish to configure argcomplete, CloudGoat also supports the use of directory paths as scenario names, which means tab-completion will work for scenario names. Just use `/scenario/[ scenario-name ]` or `./[ scenarioinstance-name ]` and your shell should do the rest.
+うまくいかない場合や、argcompleteを使いたくない場合は、ディレクトリパスをシナリオ名として使うこともできます。その場合は、シナリオ名にTAB補完が使用できます。`/scenario/[ scenario-name ]`または`./[ scenarioinstance-name ]`の場合であれば、shellが残りを補完してくれるはずです。
 
 ### help
 

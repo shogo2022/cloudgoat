@@ -95,7 +95,7 @@ $ docker run -it -v ~/.aws:/root/.aws/ rhinosecuritylabs/cloudgoat:latest
 
 `$ ./cloudgoat.py create iam_privesc_by_rollback`
 
-アタッカーは厳しく制限されたIAMユーザーを使い、以前のIAMポリシーバージョンを確認、そしてフル管理者権限をリストアすることで、特権エスカレーションが可能です。
+アタッカーは厳しく制限されたIAMユーザーを使いますが、以前のIAMポリシーバージョンの確認やフル管理者権限をリストアすることで、特権エスカレーションが可能となります。
 
 [シナリオページはこちら](scenarios/iam_privesc_by_rollback/README.md)
 

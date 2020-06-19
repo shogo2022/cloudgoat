@@ -1,38 +1,38 @@
-# Scenario: iam_privesc_by_rollback
+# シナリオ: iam_privesc_by_rollback
 
-**Size:** Small
+**サイズ:** 小
 
-**Difficulty:** Easy
+**難しさ:** 簡単
 
-**Command:** `$ ./cloudgoat.py create iam_privesc_by_rollback`
+**コマンド:** `$ ./cloudgoat.py create iam_privesc_by_rollback`
 
-## Scenario Resources
+## シナリオリソース
 
 * 1 IAM User
   * 5 policy versions
 
-## Scenario Start(s)
+## 最初の情報
 
-1. IAM User "Raynor"
+1. IAMユーザー "Raynor"
 
-## Scenario Goal(s)
+## シナリオの目的
 
-Acquire full admin privileges.
+フルアドミン権限の取得
 
-## Summary
+## 要約
 
-Starting with a highly-limited IAM user, the attacker is able to review previous IAM policy versions and restore one which allows full admin privileges, resulting in a privilege escalation exploit.
+アタッカーは厳しく制限されたIAMユーザーを使いますが、以前のIAMポリシーバージョンの確認やフル管理者権限をリストアすることで、特権エスカレーションが可能となります。
 
-## Exploitation Route(s)
+## 攻撃経路
 
 ![Scenario Route(s)](https://www.lucidchart.com/publicSegments/view/acef779c-51ce-4582-b4d2-19ae92b7f170/image.png)
 
-## Route Walkthrough - IAM User "Raynor"
+## ガイド - IAMユーザ "Raynor"
 
-1. Starting as the IAM user "Raynor," the attacker has only a few limited - seemingly harmless - privileges available to them.
-2. The attacker analyzes Raynor's privileges and notices the SetDefaultPolicyVersion permission - allowing access to 4 other versions of the policy via setting an old version as the default.
-3. After reviewing the old policy versions, the attacker finds that one version in particular offers a full set of admin rights.
-4. Attacker restores the full-admin policy version, gaining full admin privileges and the ability to carry out any malicious actions they wish.
-5. As a final step, the attacker may choose to revert Raynor's policy version back to the original one, thereby concealing their actions and the true capabilities of the IAM user.
+1. IAMユーザーの"Raynor"としてのアタッカーはごく限られた、害のなさそうな権限のみがあります。
+2. アタッカーはRaynorの権限を調査し、SetDefaultPolicyVersion権限があることを発見し、古いバージョンをデフォルトとすることで過去の4バージョンのポリシーにアクセスできるようになります。
+3. 過去のポリシーバージョンを調査すると、あるバージョンにフルアドミン権限があることを発見します。
+4. アタッカーはフルアドミンの権限があるポリシーを復元し、全てを可能にするフルアドミン権限を取得します。
+5. 最後に、アタッカーはRaynorのポリシーバージョンを元に戻し、行動を隠します。
 
-A cheat sheet for this route is available [here](./cheat_sheet_raynor.md).
+この方法のチートシートは[こちら](./cheat_sheet_raynor.md).

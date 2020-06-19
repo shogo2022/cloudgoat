@@ -1,45 +1,45 @@
-# Scenario: iam_privesc_by_attachment
+# シナリオ: iam_privesc_by_attachment
 
-**Size:** Medium
+**サイズ:** 中
 
-**Difficulty:** Moderate
+**難しさ:** 普通
 
-**Command:** `$ ./cloudgoat.py create iam_privesc_by_attachment`
+**コマンド:** `$ ./cloudgoat.py create iam_privesc_by_attachment`
 
-## Scenario Resources
+## シナリオリソース
 
 * 1 VPC with:
   * EC2 x 1
 * 1 IAM User
 
-## Scenario Start(s)
+## 最初の情報
 
-1. IAM User "Kerrigan"
+1. IAMユーザー "Kerrigan"
 
-## Scenario Goal(s)
+## シナリオの目的
 
-Delete the EC2 instance "cg-super-critical-security-server."
+EC2インスタンス"cg-super-critical-security-server."の削除
 
-## Summary
+## 要約
 
-Starting with a very limited set of permissions, the attacker is able to leverage the instance-profile-attachment permissions to create a new EC2 instance with significantly greater privileges than their own. With access to this new EC2 instance, the attacker gains full administrative powers within the target account and is able to accomplish the scenario's goal - deleting the cg-super-critical-security-server and paving the way for further nefarious actions.
+アタッカーにはごく限られた権限が与えられますが、instance-profile-attachment権限を使い、自身の権限以上の権限を持つEC2インスタンスを作成します。このEC2インスタンスにアクセスすることでアタッカーはこのアカウントの中でのフル管理者権限を持つことになり、このシナリオのゴールである、cg-super-critical-security-serverの削除とさらなる攻撃が可能となります。
 
-Note: This scenario may require you to create some AWS resources, and because CloudGoat can only manage resources it creates, you should remove them manually before running `./cloudgoat destroy`.
+Note: このシナリオでは自身でAWSリソースを作ることが想定されますが、CloudGoatはCloudGoat自身がさくせしたリソースのみが管理対象となるため、`./cloudgoat destroy`コマンドを実行する前に自身のリソースは削除してください。
 
-## Exploitation Route(s)
+## 攻撃経路
 
 ![Scenario Route(s)](https://www.lucidchart.com/publicSegments/view/17beef30-c547-4d58-912c-9b9250ea6c82/image.png)
 
-## Walkthrough - IAM User "Kerrigan"
+## ガイド - IAMユーザー "Kerrigan"
 
-1. Starting as the IAM user "Kerrigan," the attacker uses their limited privileges to explore the environment.
-2. The attacker first lists EC2 instances, identifying their target - the "cg-super-critical-security-server" - but being unable to directly affect the target, the attacker looks for another way...
-3. The attacker decides to enumerate existing instance profiles and roles within the account, identifying an instance profile they can use and a promising-looking role.
-4. With a plan in mind, the attacker prepares for their exploit. First, they swap the full-admin role onto the instance profile.
-5. Next, the attacker creates a new EC2 key pair.
-6. Then, the attacker creates a new EC2 instance with that keypair, meaning they now have shell access to it.
-7. As the final step in the exploit, the attacker then attaches the full-admin-empowered instance profile to the EC2 instance.
-8. By accessing and using the new EC2 instance as a staging platform, the attacker is able to execute AWS CLI commands with full admin privileges granted by the attached profile's role.
-9. The attacker is finally able to terminate the "cg-super-critical-security-server" EC2 instance, completing the scenario.
+1. IAMユーザ"Kerrigan"として、アタッカーは限られた権限の中で環境を調査します。
+2. アタッカーはまず、EC2インスタンスを一覧し、ターゲットである"cg-super-critical-security-server"を確認します。しかし直接変更がでd気ないので、アタッカーは別の方法を探します...
+3. アタッカーはアカウント内にあるインスタンスプロファイルやロールを探し、使えそうなインスタンスプロファイルやロールを識別します。
+4. 計画を練り、アタッカーは攻撃を開始します。まず、インスタンスプロファイルにフルアドミンロールをつけます。
+5. 次に、アタッカーは新しいEC2キーペアを作成します。
+6. そして、このアタr椎キーペアでEC2インスタンスを作り、シェルアクセスを手に入れます。
+7. 攻撃の最終ステップとして、アタッカーはフルアドミン権限をもつインスタンスプロファイルをEC2インスタンスにアタッチします。
+8. 新しいEC2インスタンスを踏み台とし、アタッカーはアタッチされたプロファイルロールのおかげでAWS CLIコマンドをフルアドミン権限で実行することができます。
+9. 最終的にアタッカーはEC2インスタンス"cg-super-critical-security-server"をterminateさせ、シナリオの完了です。
 
-A cheat sheet for this route is available [here](./cheat_sheet_kerrigan.md).
+この方法のチートシートは[こちら](./cheat_sheet_kerrigan.md).

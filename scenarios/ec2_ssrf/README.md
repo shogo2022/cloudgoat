@@ -1,41 +1,42 @@
-# Scenario: ec2_ssrf
+# シナリオ: ec2_ssrf
 
-**Size:** Medium
+**サイズ:** 中
 
-**Difficulty:** Moderate
+**難しさ:** 普通
 
-**Command:** `$ ./cloudgoat.py create ec2_ssrf`
+**コマンド:** `$ ./cloudgoat.py create ec2_ssrf`
 
-## Scenario Resources
+## シナリオリソース
 
 - 1 VPC with:
 	- EC2 x 1
 - 1 Lambda Function
 - 1 S3 Bucket
 
-## Scenario Start(s)
+## 最初の情報
 
 1. IAM User "Solus"
 
-## Scenario Goal(s)
+## シナリオの目的
 
-Invoke the "cg-lambda-[ CloudGoat ID ]" Lambda function.
+"cg-lambda-[ CloudGoat ID ]"というLambdaの実行
 
-## Summary
+## 要約
 
-Starting as the IAM user Solus, the attacker discovers they have ReadOnly permissions to a Lambda function, where hardcoded secrets lead them to an EC2 instance running a web application that is vulnerable to server-side request forgery (SSRF). After exploiting the vulnerable app and acquiring keys from the EC2 metadata service, the attacker gains access to a private S3 bucket with a set of keys that allow them to invoke the Lambda function and complete the scenario.
+アタッカーはIAMユーザーのSolusとなり、LambdaにReadOnly権限でアクセスできることを見つけ、そこにハードコードされたシークレットを元に見つけたEC2インスタンスが、サーバーサイドリクエストフォージェリ(SSRF)に脆弱性があるwebアプリケーションを使用していることを発見します。脆弱性をつき、EC2メタデータサービスからキーを入手したら、プライベートなS3バケットへアクセスをして、Lambdaを実行するためのキーを手に入れシナリオ完了を目指します。
 
-## Exploitation Route(s)
+## 攻撃経路
 
 ![Scenario Route(s)](https://www.lucidchart.com/publicSegments/view/3117f737-3290-48c6-b0bf-e122a305858d/image.png)
 
-## Route Walkthrough - IAM User "Solus"
+## ガイド - IAMユーザー "Solus"
 
-1. As the IAM user Solus, the attacker explores the AWS environment and discovers they can list Lambda functions in the account.
-2. Within a Lambda function, the attacker finds AWS access keys belonging to a different user - the IAM user Wrex.
-3. Now operating as Wrex, the attacker discovers an EC2 instance running a web application vulnerable to a SSRF vulnerability.
-4. Exploiting the SSRF vulnerability via the `?url=...` parameter, the attacker is able to steal AWS keys from the EC2 metadata service.
-5. Now using the keys from the EC2 instance, the attacker finds a private S3 bucket containing another set of AWS credentials for a more powerful user: Shepard.
-6. Now operating as Shepard, with full-admin final privileges, the attacker can invoke the original Lambda function to complete the scenario.
+1. IAMユーザーのSolusとしてAWS環境の調査を進めると、アタッカーはアカウント内のLambdaを一覧できることを発見します。
+2. Lambdaの中でアタッカーは他のユーザー、IAMユーザーWrexのAWSアクセスキーを発見します。
+3. Wrexとして調査を続けると、アタッカーはSSRFに脆弱性があるwebアプリケーションが稼働しているEC2インスタンスを見つけます。
+4. SSRFの脆弱性を`?url=...`パラメータを使用して調査をしていくと、EC2メタデータサービスからAWSキーを取得することができます。
+5. EC2からキーを使うことで、アタッカーはさらに上の権限をもつユーザー、Shepardの
+AWSユーザ情報が入ったプライベートなS3バケットを見つけます。
+6. Shephardとして操作をすることで、フルアドミン権限を丁に入れたら、シナリオの目的であるLambdaを実行することができます。
 
-A cheat sheet for this route is available [here](./cheat_sheet_solus.md).
+この方法のチートシートは[こちら](./cheat_sheet_solus.md).

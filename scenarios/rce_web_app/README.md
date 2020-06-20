@@ -1,12 +1,12 @@
-# Scenario: rce_web_app
+# シナリオ: rce_web_app
 
-**Size:** Medium
+**サイズ:** 中
 
-**Difficulty:** Hard
+**難しさ:** 難しい
 
-**Command:** `$ ./cloudgoat.py create rce_web_app`
+**コマンド:** `$ ./cloudgoat.py create rce_web_app`
 
-## Scenario Resources
+## シナリオリソース
 
 * 1 VPC with:
   * ELB x 1
@@ -15,48 +15,48 @@
   * RDS x 1
 * 2 IAM Users
 
-## Scenario Start(s)
+## 最初の情報
 
-1. IAM User "Lara"
-2. IAM User "McDuck"
+1. IAMユーザー "Lara"
+2. IAMユーザー "McDuck"
 
-## Scenario Goal(s)
+## シナリオの目的
 
-Find a secret stored in the RDS database.
+RDSデータベースに保存されたシークレットの発見
 
-## Summary
+## 要約
 
-Starting as the IAM user Lara, the attacker explores a Load Balancer and S3 bucket for clues to vulnerabilities, leading to an RCE exploit on a vulnerable web app which exposes confidential files and culminates in access to the scenario’s goal: a highly-secured RDS database instance.
+アタッカーはIAMユーザーのLaraとなり、脆弱性を探すためにロードバランサーとS3バケットを調査し、webアプリにRCEの脆弱性があることを発見し、機密情報の取得およびシナリオの目的であるセキュアなRDSデータベースインスタンスへアクセスします。
 
-Alternatively, the attacker may start as the IAM user McDuck and enumerate S3 buckets, eventually leading to SSH keys which grant direct access to the EC2 server and the database beyond.
+もしくは、アタッカーはIAMユーザーのMcDuckとなり、S3バケットを調査し、EC2サーバへの直接アクセスができるSSHキーを手に入れ、データベースへアクセスすることもできます。
 
-## Exploitation Route(s)
+## 攻撃位経路
 
 ![Scenario Route(s)](https://www.lucidchart.com/publicSegments/view/1b75f181-4d6e-4ad7-b3fb-56dd54efab66/image.png)
 
-## Route Walkthrough - IAM User “Lara”
+## ガイド - IAMユーザー “Lara”
 
-1. As the IAM user Lara, the attacker explores the AWS environment and discovers a web application hosted behind a secured Load Balancer.
-2. The attacker then lists S3 buckets, discovering one which contains the logs for the Load Balancer.
-3. While reviewing the contents of the Load Balancer logs, the attacker sees that the web app has a secret admin page.
-4. Upon visiting the secret admin URL, the attacker discovers that the web app is vulnerable to a remote code execution (RCE) attack via a secret parameter embedded in a form.
-5. The attacker leverages this vulnerability to gain shell access on the EC2 instance hosting the web app.
+1. アタッカーはIAMユーザーのLaraとしてAWS環境を探していると、セキュアなロードバランサーの後ろにあるwebアプリケーションを発見しました。
+2. アタッカーはS3バケットを一覧し、ロードバランサーのログが入ったバケットを発見します。
+3. ロードバランサーのログを見ていると、アタッカーはwebアプリには隠されたアドミンページがあることを発見します。
+4. アドミンURLにアクセスすると、アタッカーはフォームに埋め込まれたパラメータ経由でリモートでコードが実行される(RCE)脆弱性を発見します。
+5. アタッカーはこの脆弱性を利用してwebアプリが稼働しているEC2インスタンスへのシェルアクセスを手に入れます。
 
-**Branch A**
+**分岐 A**
 
 1. Now working through the EC2 instance (and therefore operating with its role's more expansive permissions), the attacker is able to access a private S3 bucket.
 2. Inside the private S3 bucket, the attacker finds a text file left behind by an irresponsible developer which contains the login credentials for an RDS database.
 3. The attacker then uses the EC2 instance to list and discover the RDS database referenced in the credentials file.
 4. Finally, the attacker is able to access the RDS database using the credentials they found and acquires the scenario's goal: the secret text stored in the RDS database!
 
-**Branch B**
+**分岐 B**
 
 1. Struck by sudden inspiration, the attacker queries the EC2 metadata service and discovers the RDS database credentials and address.
 2. The attacker is then able to access the RDS database using the credentials they found and acquires the scenario's goal: the secret text stored in the RDS database!
 
 A cheat sheet for this route is available [here](./cheat_sheet_lara.md).
 
-## Route Walkthrough - IAM User “McDuck”
+## ガイド - IAMユーザー “McDuck”
 
 1. The attacker explores the AWS environment and discovers they are able to list S3 buckets using their starting keys.
 2. The attacker discovers several S3 buckets, but they are only able to access one of them. Inside that one S3 bucket they find a pair of SSH keys.
